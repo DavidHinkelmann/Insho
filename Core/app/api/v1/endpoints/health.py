@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from ....services.health_service import HealthService
-from ....repositories.health_repository import HealthRepository
+from Core.app.services.health_service import HealthService
+from Core.app.repositories.health_repository import HealthRepository
 
 router = APIRouter()
 
