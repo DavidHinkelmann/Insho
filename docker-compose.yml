@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-sqlite
+    container_name: supertokens-core
+    environment:
+      - DISABLE_TELEMETRY=true
+    ports:
+      - "3567:3567"
+
+  backend:
+    image: python:3.11-slim
+    container_name: insho-backend
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: bash -lc "pip install --no-cache-dir -r Core/requirements.txt && uvicorn Core.app.main:app --host 0.0.0.0 --port 8000 --reload"
+    environment:
+      - SUPERTOKENS_CONNECTION_URI=http://supertokens:3567
+      - API_DOMAIN=http://localhost:8000
+      - WEBSITE_DOMAIN=http://localhost:3000
+      - API_BASE_PATH=/auth
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - supertokens
+    ports:
+      - "8000:8000"
+
+  web:
+    image: node:20-alpine
+    container_name: insho-web
+    working_dir: /app/Web/Insho
+    volumes:
+      - .:/app
+      - web_node_modules:/app/Web/Insho/node_modules
+    command: sh -lc "npm ci && npm run start -- --host 0.0.0.0 --port 3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_API_DOMAIN=http://localhost:8000
+      - VITE_WEBSITE_DOMAIN=http://localhost:3000
+      - VITE_API_BASE_PATH=/auth
+      - VITE_WEBSITE_BASE_PATH=/auth
+    depends_on:
+      - backend
+      - supertokens
+    ports:
+      - "3000:3000"
+
+volumes:
+  web_node_modules:
