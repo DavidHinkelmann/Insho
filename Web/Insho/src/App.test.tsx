@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react'
 import App from './App.tsx'
 
 describe('App', () => {
-  test('renders', () => {
+  test('renders CTA button', () => {
     render(<App />)
-    expect(screen.getByText('Learn React')).toBeDefined()
+    expect(screen.getByText('Loslegen')).toBeDefined()
   })
 })

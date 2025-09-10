@@ -1,36 +1,60 @@
-import logo from './logo.svg'
+import { Button } from "@/components/ui/button.tsx";
 
-function App() {
-  return (
-    <div className="text-center">
-      <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
-        <img
-          src={logo}
-          className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
-          alt="logo"
-        />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
-    </div>
-  )
+interface option {
+    route: string,
+    description: string,
+}
+
+function App(){
+
+    const options: option[] = [
+        { route: "/login" , description: "Login" } ,
+        { route: "/register" , description: "Registrieren" } ,
+        { route: "/profile" , description: "Profil" } ,
+    ]
+
+    const header = () => {
+        return (
+            <div className="flex flex-col items-center align-text-top">
+                <h1 className="text-4xl font-bold">インショ</h1>
+                <h3 className="text-3xl font-bold">Insho</h3>
+                <p className="text-xl font-bold">Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit
+                    Leichtigkeit.</p>
+            </div>
+        )
+    }
+
+    const buttonGroup = ( options: option[] ) => {
+        if ( !options) return;
+        return <>
+            {
+                options.map(( option , index ) => {
+                    return (
+                        <div key={index} className="felx">
+                            <a href={option.route} aria-label={option.route}>
+                                <Button
+                                    className="flex w-full bg-[#38E07A] text-black hover:bg-[#38E07A]">
+                                    {option.description}
+                                </Button>
+                            </a>
+                        </div>
+                    )
+                })
+            }
+        </>
+    }
+
+    return (
+        <div
+            className="text-center flex flex-col items-center justify-center bg-[#122117] text-white text-[calc(10px+2vmin)]">
+            {header()}
+            <div
+                className="mt-6 flex-row w-full"
+            >
+                {buttonGroup(options)}
+            </div>
+        </div>
+    );
 }
 
 export default App
