@@ -46,7 +46,7 @@ function App(){
 
     return (
         <div
-            className="text-center flex flex-col items-center justify-center bg-[#122117] text-white text-[calc(10px+2vmin)]">
+            className="text-center grid grid-rows-2 items-center justify-center bg-[#122117] text-white text-[calc(10px+2vmin)]" style={{ gridTemplateRows: 'auto 1fr' }}>
             {header()}
             <div
                 className="mt-6 flex-row w-full"

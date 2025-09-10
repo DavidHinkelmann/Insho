@@ -15,7 +15,7 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 
 import App from './App.tsx'
-import { login as apiLogin, register as apiRegister, me as apiMe, logout as apiLogout, type User } from './lib/api'
+import { login as apiLogin, register as apiRegister, me as apiMe, logout as apiLogout, type User } from '@/service/api'
 import * as React from "react";
 
 // Define routes freshly on module eval; HMR dispose will clean previous instances
@@ -112,23 +112,48 @@ function Login() {
   }
 
   return (
-    <div style={{ margin: '40px auto', padding: 16 }} className="text-white text-[calc(10px+2vmin)]">
-      <h2>Login</h2>
-      <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%' }} />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Passwort</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%' }} />
-        </div>
-        {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
-        <button type="submit" disabled={loading}>{loading ? 'Bitte warten…' : 'Einloggen'}</button>
-      </form>
-      <p style={{ marginTop: 12 }}>
-        Noch kein Account? <a href="/register">Registrieren</a>
-      </p>
+    <div className="min-h-screen flex flex-col items-center justify-center text-center text-white text-[calc(10px+2vmin)]">
+      <div className="flex flex-col items-center">
+        <h1 className="text-4xl font-bold">インショ</h1>
+        <h3 className="text-3xl font-bold">Insho</h3>
+        <p className="text-xl font-bold">Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit Leichtigkeit.</p>
+      </div>
+      <div className="mt-6 w-full max-w-sm text-left">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+        <form onSubmit={onSubmit} className="space-y-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Email</label>
+            <input
+              className="w-full rounded-md px-3 py-2 text-black"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Passwort</label>
+            <input
+              className="w-full rounded-md px-3 py-2 text-black"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <div className="text-red-400 text-sm">{error}</div>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-2 w-full rounded-md bg-[#38E07A] text-black hover:bg-[#38E07A] px-4 py-2 font-medium disabled:opacity-70"
+          >
+            {loading ? 'Bitte warten…' : 'Einloggen'}
+          </button>
+        </form>
+        <p className="mt-3 text-center">
+          Noch kein Account? <a className="underline" href="/register">Registrieren</a>
+        </p>
+      </div>
     </div>
   )
 }
@@ -159,29 +184,57 @@ function Register() {
   }
 
   return (
-    <div
-        style={{ maxWidth: 360, margin: '40px auto', padding: 16 }} className="text-white text-[calc(10px+2vmin)]">
-      <h2>Registrieren</h2>
-      <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label>Name (optional)</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} style={{ width: '100%' }} />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%' }} />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Passwort</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%' }} />
-        </div>
-        {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
-        {success && <div style={{ color: 'green', marginBottom: 12 }}>{success}</div>}
-        <button type="submit" disabled={loading}>{loading ? 'Bitte warten…' : 'Account erstellen'}</button>
-      </form>
-      <p style={{ marginTop: 12 }}>
-        Bereits registriert? <a href="/login">Zum Login</a>
-      </p>
+    <div className="min-h-screen flex flex-col items-center justify-center text-center text-white text-[calc(10px+2vmin)]">
+      <div className="flex flex-col items-center">
+        <h1 className="text-4xl font-bold">インショ</h1>
+        <h3 className="text-3xl font-bold">Insho</h3>
+        <p className="text-xl font-bold">Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit Leichtigkeit.</p>
+      </div>
+      <div className="mt-6 w-full max-w-sm text-left">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Registrieren</h2>
+        <form onSubmit={onSubmit} className="space-y-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Name (optional)</label>
+            <input
+              className="w-full rounded-md px-3 py-2 text-black"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Email</label>
+            <input
+              className="w-full rounded-md px-3 py-2 text-black"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm">Passwort</label>
+            <input
+              className="w-full rounded-md px-3 py-2 text-black"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <div className="text-red-400 text-sm">{error}</div>}
+          {success && <div className="text-green-400 text-sm">{success}</div>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-2 w-full rounded-md bg-[#38E07A] text-black hover:bg-[#38E07A] px-4 py-2 font-medium disabled:opacity-70"
+          >
+            {loading ? 'Bitte warten…' : 'Account erstellen'}
+          </button>
+        </form>
+        <p className="mt-3 text-center">
+          Bereits registriert? <a className="underline" href="/login">Zum Login</a>
+        </p>
+      </div>
     </div>
   )
 }
