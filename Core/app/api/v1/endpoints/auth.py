@@ -1,44 +1,35 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from typing import Any, Callable
+from sqlalchemy.orm import Session
 
-# Try to import SuperTokens verify_session; if unavailable, provide a graceful fallback
-SUPERTOKENS_AVAILABLE = True
-try:
-    from supertokens_python.recipe.session.framework.fastapi import (
-        verify_session as st_verify_session,
-    )
-    from supertokens_python.recipe.session import SessionContainer
-except ModuleNotFoundError:
-    SUPERTOKENS_AVAILABLE = False
-
-    # Fallback types and dependency when SuperTokens is not installed
-    SessionContainer = Any  # type: ignore
-
-    def st_verify_session() -> Callable:  # type: ignore
-        async def _dep():
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail=(
-                    "SuperTokens not installed. Install dependencies: "
-                    "'pip install -r Core/requirements.txt' or from repo root 'pip install -r requirements.txt'."
-                ),
-            )
-
-        return _dep
-
-# Alias verify_session regardless of availability
-verify_session = st_verify_session
+from ....core.database import get_db
+from ....schemas.user import UserCreate, UserLogin, UserRead
+from ....schemas.auth import LoginResponse
+from ....services.user_service import UserService
+from ....repositories.user_repository import UserRepository
+from ....security.auth import create_access_token, get_current_user
 
 router = APIRouter()
 
 
-@router.get("/me", summary="Get current user (protected)")
-async def get_me(session: SessionContainer = Depends(verify_session())):
-    """Returns info about the currently authenticated trainee/user.
-    Requires a valid SuperTokens session.
-    """
-    return {
-        "userId": session.get_user_id(),
-        # You can also return access token payload if needed:
-        # "jwtPayload": session.get_access_token_payload(),
-    }
+def get_user_service() -> UserService:
+    return UserService(repo=UserRepository())
+
+
+@router.post("/register", response_model=UserRead, summary="Register a new user")
+def register(payload: UserCreate, db: Session = Depends(get_db), service: UserService = Depends(get_user_service)):
+    user = service.register(db, payload)
+    return user
+
+
+@router.post("/login", response_model=LoginResponse, summary="Login and get JWT")
+def login(payload: UserLogin, db: Session = Depends(get_db), service: UserService = Depends(get_user_service)):
+    user = service.authenticate(db, payload.email, payload.password)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    token = create_access_token(subject=user.id)
+    return {"access_token": token, "token_type": "bearer", "user": user}
+
+
+@router.get("/me", response_model=UserRead, summary="Get current user (protected)")
+async def get_me(current_user=Depends(get_current_user)):
+    return current_user

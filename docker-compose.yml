@@ -2,12 +2,24 @@ version: "3.9"
 
 services:
   supertokens:
-    image: registry.supertokens.io/supertokens/supertokens-sqlite
+    image: registry.supertokens.io/supertokens/supertokens-postgresql:latest
     container_name: supertokens-core
     environment:
       - DISABLE_TELEMETRY=true
     ports:
       - "3567:3567"
+
+  db:
+    image: postgres:15-alpine
+    container_name: insho-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: insho
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   backend:
     image: python:3.11-slim
@@ -15,6 +27,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+    # Hinweis: wir setzen DATABASE_URL so, dass der Container den db-Service anspricht
     command: bash -lc "pip install --no-cache-dir -r Core/requirements.txt && uvicorn Core.app.main:app --host 0.0.0.0 --port 8000 --reload"
     environment:
       - SUPERTOKENS_CONNECTION_URI=http://supertokens:3567
@@ -22,8 +35,11 @@ services:
       - WEBSITE_DOMAIN=http://localhost:3000
       - API_BASE_PATH=/auth
       - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@db:5432/insho
+      - JWT_SECRET_KEY=change-me-in-prod
     depends_on:
       - supertokens
+      - db
     ports:
       - "8000:8000"
 
@@ -49,3 +65,4 @@ services:
 
 volumes:
   web_node_modules:
+  postgres_data:

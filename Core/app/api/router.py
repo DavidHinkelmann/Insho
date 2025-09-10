@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from Core.app.api.v1.endpoints import health, auth
+from .v1.endpoints import health, auth
 
 api_router = APIRouter()
 

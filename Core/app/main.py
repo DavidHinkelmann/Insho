@@ -9,7 +9,7 @@ SUPERTOKENS_AVAILABLE = True
 try:
     from supertokens_python import init, SupertokensConfig, InputAppInfo
     from supertokens_python.recipe import session, emailpassword, thirdparty
-    from supertokens_python.framework.fastapi import get_middleware, get_routes
+    from supertokens_python.framework.fastapi import get_middleware
     from supertokens_python import get_all_cors_headers
 except ModuleNotFoundError:
     SUPERTOKENS_AVAILABLE = False
@@ -24,6 +24,14 @@ app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
 # SuperTokens init (only if available)
 if SUPERTOKENS_AVAILABLE:
+    # Enable Session, EmailPassword and ThirdParty recipes.
+    # Providers for ThirdParty can be configured via SuperTokens Core/Dashboard.
+    recipe_list = [
+        session.init(),
+        emailpassword.init(),
+        thirdparty.init(),
+    ]
+
     init(
         app_info=InputAppInfo(
             app_name=settings.PROJECT_NAME,
@@ -35,17 +43,14 @@ if SUPERTOKENS_AVAILABLE:
             connection_uri=settings.SUPERTOKENS_CONNECTION_URI,
             api_key=settings.SUPERTOKENS_API_KEY,
         ),
-        recipe_list=[
-            session.init(),
-            emailpassword.init(),
-            thirdparty.init(providers=[]),  # add providers later if needed
-        ],
+        framework="fastapi",
+        recipe_list=recipe_list,
     )
 
 # CORS - allow frontend and SuperTokens headers
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.WEBSITE_DOMAIN],
+    allow_origins=settings.WEBSITE_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"] + get_all_cors_headers(),
@@ -53,8 +58,7 @@ app.add_middleware(
 
 # SuperTokens middleware and routes (mounted at settings.API_BASE_PATH, default: /auth)
 if SUPERTOKENS_AVAILABLE:
-    app = get_middleware(app)
-    app.include_router(get_routes())
+    app.add_middleware(get_middleware())
 
 # Mount versioned API
 app.include_router(api_router, prefix="/api/v1")
@@ -68,3 +72,14 @@ def root():
             "SuperTokens not installed. Install dependencies: 'pip install -r Core/requirements.txt' or 'pip install -r requirements.txt' from repo root."
         )
     return info
+
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    # Ensure models are imported so SQLAlchemy is aware of them
+    from .models import user as _user_model  # noqa: F401
+    from .core.database import Base, engine
+
+    # Create tables if they do not exist
+    Base.metadata.create_all(bind=engine)

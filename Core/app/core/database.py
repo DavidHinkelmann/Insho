@@ -3,7 +3,7 @@ from typing import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
-from config import get_settings
+from .config import get_settings
 
 # Load settings at once (lru_cache ensures a single instance)
 _settings = get_settings()
@@ -52,7 +52,6 @@ Base = declarative_base()
 
 def get_db() -> Generator[Session, None, None]:
     """FastAPI dependency that yields an SQLAlchemy session.
-
     Usage:
         def endpoint(db: Session = Depends(get_db)):
             ...
