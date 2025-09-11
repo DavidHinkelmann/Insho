@@ -489,3 +489,54 @@ Files prefixed with `demo` can be safely deleted. They are there to provide a st
 # Learn More
 
 You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+
+
+## Authentication (SuperTokens)
+
+Diese App integriert SuperTokens im Frontend für Anmeldung via E-Mail/Passwort und Google SSO.
+
+### Voraussetzungen
+- Ein Backend, das SuperTokens unterstützt und die Auth-APIs bereitstellt (z. B. FastAPI/Node mit den Recipes EmailPassword + ThirdParty + Session) und über CORS den Zugriff vom Frontend erlaubt.
+- Google OAuth Client im Backend konfiguriert (Redirect-URIs müssen mit `VITE_WEBSITE_DOMAIN` + `/auth/callback/google` übereinstimmen).
+
+### Installation
+```
+npm install
+```
+
+Folgende Pakete wurden hinzugefügt:
+- supertokens-auth-react
+- supertokens-web-js
+
+### Konfiguration (Vite .env)
+Erstellen Sie eine `.env` im Verzeichnis `Web/Insho` mit z. B.:
+```
+VITE_APP_NAME=Insho
+VITE_WEBSITE_DOMAIN=http://localhost:3000
+VITE_API_DOMAIN=http://localhost:8000
+VITE_API_BASE_PATH=/auth
+VITE_WEBSITE_BASE_PATH=/auth
+```
+
+- `VITE_API_DOMAIN` muss auf Ihr Backend zeigen, das SuperTokens-Auth-Endpunkte bereitstellt (z. B. FastAPI unter `http://localhost:8000`).
+- `VITE_API_BASE_PATH` muss mit dem im Backend konfigurierten `apiBasePath` (Standard: `/auth`) übereinstimmen.
+- `VITE_WEBSITE_BASE_PATH` ist der Mount-Pfad für die vorgefertigte UI im Frontend.
+
+### Routing
+- Die SuperTokens UI ist unter `/auth/*` eingebunden (Sign-In/Sign-Up, Social Login).
+- Beispiel einer geschützten Seite ist `/profile` (setzt bestehende Session voraus).
+
+### Entwicklung starten
+```
+npm run start
+```
+
+Rufen Sie im Browser auf:
+- Startseite: `http://localhost:3000/`
+- Auth UI: `http://localhost:3000/auth`
+- Profil (geschützt): `http://localhost:3000/profile`
+
+### Hinweise
+- Wenn noch kein Backend mit SuperTokens läuft, werden die Auth-Requests fehlschlagen. Richten Sie SuperTokens im Backend ein und aktivieren Sie CORS (Origin: `http://localhost:3000`).
+- Google SSO benötigt einen konfigurierten Google OAuth Client (Client ID/Secret) auf der Backend-Seite.
+- Styles der vorgefertigten UI werden via `import 'supertokens-auth-react/style.css'` eingebunden.
