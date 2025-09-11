@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button.tsx";
 import Aurora from "@/components/Aurora.tsx";
+import TextType from "@/components/TextType.tsx";
 
 
 interface option {
@@ -24,11 +25,21 @@ function App(){
         />
     );
 
-    const header = () => {
+    const showTextGroup = () => {
         return (
-            <div className="flex flex-col items-center align-text-top gap-2">
-                <h1 className="text-4xl font-bold text-[#38E07A]">インショ</h1>
-                <h3 className="text-xl font-bold">Insho</h3>
+            <div className="flex flex-col items-center align-text-top gap-3 overflow-hidden">
+                <div className="pb-4">
+                <TextType
+                    className="text-6xl text-[#38E07A]"
+                    text={["インショ","Inshō", "Insho", "Essen & Trinken"]}
+                    textColors={["#38E07A"]}
+                    typingSpeed={75}
+                    pauseDuration={1500}
+                    deletingSpeed={500}
+                    showCursor={true}
+                    cursorCharacter="▌"
+                />
+                </div>
                 <p className="text-2xl font-bold">👋Willkommen</p>
                 <p className="text-xl font-bold">Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit
                     Leichtigkeit.</p>
@@ -36,7 +47,7 @@ function App(){
         )
     }
 
-    const buttonGroup = ( options: option[] ) => {
+    const ShowButtonGroup = ( options: option[] ) => {
         if ( !options) return;
         return <>
             {
@@ -48,13 +59,13 @@ function App(){
                                     option.route !== "/profile" ?
                                         (
                                             <Button
-                                            className="flex w-full bg-[#38E07A] text-black hover:bg-[#38E08B] text-2xl py-6">
+                                            className="flex rounded-full w-full bg-[#38E07A] text-black hover:bg-[#38E08B] text-2xl">
                                             {option.description}
                                             </Button>
                                         ):
                                         (
                                             <Button
-                                                className="flex w-full bg-gray-600 text-white text-2xl py-6 hover:bg-gray-750">
+                                                className="flex rounded-full w-full bg-gray-600 text-white text-2xl hover:bg-gray-750">
                                                 {option.description}
                                             </Button>
                                         )
@@ -73,13 +84,13 @@ function App(){
             {showAurora()}
         <div
             className=
-                "relative isolate min-h-screen text-center grid grid-rows-[auto_0.5fr_auto] items-stretch justify-center bg-[#122117] text-white text-[calc(10px+2vmin)] px-4"
+                "relative isolate min-h-screen text-center grid grid-rows-[auto_0.25fr_auto] items-stretch justify-center bg-[#122117] text-white text-[calc(10px+2vmin)] px-4"
         >
-            {header()}
+            {showTextGroup()}
             <div
-                className="mb-10 w-full max-w-sm mx-auto space-y-5"
+                className="mb-10 w-full max-w-sm mx-auto space-y-4"
             >
-                {buttonGroup(options)}
+                {ShowButtonGroup(options)}
             </div>
         </div>
         </>

@@ -97,6 +97,7 @@ Behavior without Google config:
 
 <details>
 <summary>🌍 How to Frontend Local</summary>
+
 ## Start Web 🚀
 
 ```bash
@@ -126,6 +127,7 @@ Troubleshooting
 
 <details>
 <summary>🐋 How to Docker</summary>
+
 ## Start with Docker Compose 🚢
 
 You can run the whole stack (frontend, backend, SuperTokens Core) with one command.
@@ -163,6 +165,9 @@ Stop the stack:
 docker compose down
 ```
 </details>
+
+<details>
+<summary>🔑 JWT Authentication</summary>
 
 Optional (API key):
 
@@ -220,3 +225,5 @@ curl -sS http://localhost:8000/api/v1/auth/me -H "Authorization: Bearer $TOKEN"
 - After logging in, /profile will show your user info (fetched from /api/v1/auth/me with the stored Bearer token).
 - Tokens are stored in localStorage under key "insho_access_token". Use the Logout button on /profile to clear it.
 - The frontend calls the API at VITE_API_DOMAIN (default http://localhost:8000). Configure via env if needed.
+
+</details>
