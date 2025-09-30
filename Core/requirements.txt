@@ -8,3 +8,6 @@ psycopg[binary]
 passlib[bcrypt]
 python-jose[cryptography]
 email-validator
+alembic
+python-dotenv
+pydantic[dontev]
