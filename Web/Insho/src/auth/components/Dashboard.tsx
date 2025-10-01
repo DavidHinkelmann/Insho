@@ -1,7 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect , useState } from "react";
-import { me as apiMe , type User } from "@/service/api.ts";
+import { me as apiMe , type User, logout as apiLogout } from "@/service/api.ts";
 import TextType from "@/components/TextType.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { LogOut } from "lucide-react";
 
 export function Dashboard() {
     const navigate = useNavigate()
@@ -42,7 +44,19 @@ export function Dashboard() {
                 />
             </div>
             <nav className="w-full fixed bottom-0">
-
+                <div className="max-w-7xl mx-auto px-4 py-4 flex justify-end">
+                    <Button
+                        className="bg-[#38E07A] text-black hover:bg-[#38E07A]/90"
+                        onClick={async () => {
+                            await apiLogout()
+                            navigate({ to: '/login' })
+                        }}
+                        title="Logout"
+                    >
+                        <LogOut />
+                        Logout
+                    </Button>
+                </div>
             </nav>
         </div>
     )

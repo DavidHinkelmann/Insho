@@ -45,6 +45,13 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     try { data = JSON.parse(text); } catch {}
     throw new Error(data?.detail || data?.message || res.statusText);
   }
+  // Handle 204 No Content and empty bodies safely
+  if (res.status === 204) return undefined as unknown as T;
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    // Attempt text, but cast as unknown
+    return (await res.text()) as unknown as T;
+  }
   return res.json();
 }
 
@@ -68,6 +75,12 @@ export async function me(): Promise<User> {
   return request<User>('/api/v1/auth/me');
 }
 
-export function logout() {
-  clearToken();
+export async function logout(): Promise<void> {
+  try {
+    await request<void>('/api/v1/auth/logout', { method: 'POST' });
+  } catch (_e) {
+    // Ignore backend errors for logout; proceed to clear token client-side
+  } finally {
+    clearToken();
+  }
 }
