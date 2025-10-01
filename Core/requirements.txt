@@ -5,7 +5,8 @@ openfoodfacts
 SQLAlchemy
 cython
 psycopg[binary]
-passlib[bcrypt]
+passlib[bcrypt]>=1.7.4
+bcrypt<4.1
 python-jose[cryptography]
 email-validator
 alembic

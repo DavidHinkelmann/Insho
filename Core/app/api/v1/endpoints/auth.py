@@ -33,3 +33,13 @@ def login(payload: UserLogin, db: Session = Depends(get_db), service: UserServic
 @router.get("/me", response_model=UserRead, summary="Get current user (protected)")
 async def get_me(current_user=Depends(get_current_user)):
     return current_user
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT, summary="Logout current user (no-op for stateless JWT)")
+async def logout(_=Depends(get_current_user)):
+    """
+    For stateless JWT, server cannot invalidate tokens without a blacklist.
+    This endpoint exists for symmetry and future enhancements; clients should
+    delete their access token locally. It simply returns 204.
+    """
+    return None
