@@ -14,7 +14,7 @@ export type LoginResponse = {
   user: User;
 };
 
-const API_BASE = (import.meta as any).env?.VITE_API_DOMAIN || 'http://localhost:8000';
+const API_BASE = (import.meta as any).env?.VITE_API_DOMAIN || '';
 
 const TOKEN_KEY = 'insho_access_token';
 

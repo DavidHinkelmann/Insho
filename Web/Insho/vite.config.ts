@@ -15,6 +15,14 @@ export default defineConfig({
   server: {
     host: true,  // listen on all addresses so phones on LAN can reach it
     port: 3000,
+    proxy: {
+      // Proxy API calls to the backend to avoid mixed content and CORS during dev
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   test: {
     globals: true,
