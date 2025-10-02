@@ -14,7 +14,49 @@ export type LoginResponse = {
   user: User;
 };
 
-const API_BASE = (import.meta as any).env?.VITE_API_DOMAIN || '';
+export type Food = {
+  id: string;
+  barcode: string;
+  name?: string | null;
+  calories_per_100g?: number | null;
+  proteins_per_100g?: number | null;
+  carbs_per_100g?: number | null;
+  fats_per_100g?: number | null;
+  user_id: string;
+  grams: number;
+  scanned_at: string;
+};
+
+export type FoodLookupResponse = {
+  food: {
+    barcode: string;
+    name?: string | null;
+    calories_per_100g?: number | null;
+    proteins_per_100g?: number | null;
+    carbs_per_100g?: number | null;
+    fats_per_100g?: number | null;
+  } | null;
+  source: 'db' | 'openfoodfacts' | 'not_found' | string;
+};
+
+export type FoodConsumption = {
+  id: string;
+  user_id: string;
+  food_id: string;
+  grams: number;
+  calories?: number | null;
+  proteins?: number | null;
+  carbs?: number | null;
+  fats?: number | null;
+  scanned_at: string;
+};
+
+let API_BASE = ((import.meta as any).env?.VITE_API_DOMAIN || '').trim();
+// Avoid mixed-content: if the app runs over HTTPS but API_BASE is HTTP, fallback to relative
+if (typeof window !== 'undefined' && window.location.protocol === 'https:' && API_BASE.startsWith('http://')) {
+  console.warn('[api] VITE_API_DOMAIN is HTTP while page is HTTPS; falling back to relative /api (use Vite proxy).');
+  API_BASE = '';
+}
 
 const TOKEN_KEY = 'insho_access_token';
 
@@ -83,4 +125,18 @@ export async function logout(): Promise<void> {
   } finally {
     clearToken();
   }
+}
+
+export async function lookupFood(barcode: string): Promise<FoodLookupResponse> {
+  return request<FoodLookupResponse>('/api/v1/food/lookup', {
+    method: 'POST',
+    body: JSON.stringify({ barcode }),
+  });
+}
+
+export async function consumeFood(barcode: string, grams: number): Promise<Food> {
+  return request<Food>('/api/v1/food/consume', {
+    method: 'POST',
+    body: JSON.stringify({ barcode, grams }),
+  });
 }
