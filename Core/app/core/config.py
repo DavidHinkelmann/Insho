@@ -10,10 +10,10 @@ class Settings:
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Insho API")
     VERSION: str = os.getenv("VERSION", "0.1.0")
     ENV: str = os.getenv("ENV", "development")
-    # Database URL; default to local PostgresSQL (override via env: DATABASE_URL)
+    # Database URL; default to local SQLite file for development (override via env: DATABASE_URL)
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg://postgres:postgres@localhost:5432/insho",
+        "sqlite:///./insho.db",
     )
 
     # JWT configuration

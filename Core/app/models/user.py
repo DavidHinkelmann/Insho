@@ -21,6 +21,9 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(320), nullable=False, index=True)
     hashed_password: Mapped[str] = mapped_column(String(256), nullable=False)
     name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    # Newly added optional attributes
+    gender: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    activity_level: Mapped[str | None] = mapped_column(String(32), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
@@ -29,3 +32,4 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
+    is_onboarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
