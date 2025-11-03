@@ -18,16 +18,24 @@ def get_user_service() -> UserService:
 @router.post("/register", response_model=UserRead, summary="Register a new user")
 def register(payload: UserCreate, db: Session = Depends(get_db), service: UserService = Depends(get_user_service)):
     user = service.register(db, payload)
-    return user
+    return UserRead.model_validate(user)
 
 
-@router.post("/login", response_model=LoginResponse, summary="Login and get JWT")
+@router.post("/login", response_model=LoginResponse)
 def login(payload: UserLogin, db: Session = Depends(get_db), service: UserService = Depends(get_user_service)):
-    user = service.authenticate(db, payload.email, payload.password)
-    if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
-    token = create_access_token(subject=user.id)
-    return {"access_token": token, "token_type": "bearer", "user": user}
+    print("Login payload:", payload.dict())
+    try:
+        user = service.authenticate(db, payload.email, payload.password)
+        print("Authenticated user:", user)
+        if not user:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+        token = create_access_token(subject=user.id)
+        user_out = UserRead.model_validate(user)
+        print("User output:", user_out)
+        return LoginResponse(access_token=token, user=user_out)
+    except Exception as e:
+        print("Login error:", e)
+        raise
 
 
 @router.get("/me", response_model=UserRead, summary="Get current user (protected)")

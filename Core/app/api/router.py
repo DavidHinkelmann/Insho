@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .v1.endpoints import health, auth, food
+from .v1.endpoints import health, auth, food, user, dashboard
 
 api_router = APIRouter()
 
@@ -8,3 +8,5 @@ api_router = APIRouter()
 api_router.include_router(health.router, prefix="/health", tags=["health"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(food.router, prefix="/food", tags=["food"])
+api_router.include_router(user.router, prefix="/users", tags=["users"])
+api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])

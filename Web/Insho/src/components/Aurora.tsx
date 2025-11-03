@@ -148,7 +148,7 @@ export default function Aurora(props: AuroraProps) {
         program.uniforms.uResolution.value = [width, height];
       }
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
 
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {

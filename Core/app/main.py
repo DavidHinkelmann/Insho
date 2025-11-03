@@ -31,6 +31,29 @@ settings = get_settings()
 # Initialize FastAPI app
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
+# CORS - allow frontend and SuperTokens headers
+# In development, be permissive to avoid CORS blocking during local testing.
+if settings.ENV.lower() == "development":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,  # must be False when using wildcard origins
+        allow_methods=["*"],
+        allow_headers=["*"] + get_all_cors_headers(),
+        expose_headers=["Content-Disposition"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.WEBSITE_ORIGINS,
+        # Broaden regex to include http/https and 127.0.0.1 for any port
+        allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"] + get_all_cors_headers(),
+        expose_headers=["Content-Disposition"],
+    )
+
 # SuperTokens init (only if available)
 if SUPERTOKENS_AVAILABLE:
     # Enable Session, EmailPassword and ThirdParty recipes.
@@ -56,22 +79,12 @@ if SUPERTOKENS_AVAILABLE:
         recipe_list=recipe_list,
     )
 
-# CORS - allow frontend and SuperTokens headers
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.WEBSITE_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"] + get_all_cors_headers(),
-)
-
 # SuperTokens middleware and routes (mounted at settings.API_BASE_PATH, default: /auth)
 if SUPERTOKENS_AVAILABLE and get_middleware is not None:
     app.add_middleware(get_middleware())  # type: ignore[arg-type]
 
 # Mount versioned API
 app.include_router(api_router, prefix="/api/v1")
-
 
 @app.get("/")
 def root():
@@ -82,8 +95,6 @@ def root():
         )
     return info
 
-
-
 @app.on_event("startup")
 def on_startup() -> None:
     # Ensure models are imported so SQLAlchemy is aware of them
@@ -91,5 +102,13 @@ def on_startup() -> None:
     from .models import food as _food_model  # noqa: F401
     from .core.database import Base, engine
 
-    # Create tables if they do not exist
+    # Create tables if they do not exist (initial bootstrap)
     Base.metadata.create_all(bind=engine)
+
+    # Run Alembic migrations to keep schema up to date (e.g., add new columns)
+    try:
+        from .migration.migration import migration_service
+        migration_service.run_migrations()
+    except Exception as e:
+        # Log to console; app can still run but schema may be outdated
+        print(f"[startup] Migration run failed: {e}")

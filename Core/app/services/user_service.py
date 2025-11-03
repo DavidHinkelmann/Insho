@@ -13,14 +13,16 @@ class UserService:
         self._repo = repo
 
     def register(self, db: Session, data: UserCreate):
-        existing = self._repo.get_by_email(db, data.email)
+        # Normalize email to lowercase to avoid duplicate variants
+        normalized_email = data.email.strip().lower()
+        existing = self._repo.get_by_email(db, normalized_email)
         if existing:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered",
             )
         hashed = get_password_hash(data.password)
-        user = self._repo.create(db, email=data.email, hashed_password=hashed, name=data.name)
+        user = self._repo.create(db, email=normalized_email, hashed_password=hashed, name=data.name)
         return user
 
     def authenticate(self, db: Session, email: str, password: str):

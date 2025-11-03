@@ -1,11 +1,13 @@
 import os
 import sys
 from logging.config import fileConfig
+
+from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from alembic import context
+
 from Core.app.core.config import get_settings
-from Core.app.models.user import User
+from Core.app.core.database import Base
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 parent_path = os.path.dirname(current_path)
@@ -24,7 +26,7 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-target_metadata = User.metadata
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
