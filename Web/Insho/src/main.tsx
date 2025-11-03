@@ -12,8 +12,8 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import App from './App.tsx'
-import { Onboarding } from "./auth/components/Onboarding.tsx";
-import { Dashboard } from "@/auth/components/Dashboard.tsx";
+import { Onboarding } from "./Onboarding.tsx";
+import { Dashboard } from "@/Dashboard.tsx";
 import { Register } from "@/auth/components/Register.tsx";
 import { Login } from "@/auth/components/Login.tsx";
 

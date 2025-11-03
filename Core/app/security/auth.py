@@ -13,7 +13,8 @@ from ..core.config import get_settings
 from ..core.database import get_db
 from ..models.user import User
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use a pure-Python hashing scheme by default to avoid optional bcrypt dependency issues in dev
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 _settings = get_settings()
 

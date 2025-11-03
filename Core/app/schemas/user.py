@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
 
 class UserBase(BaseModel):
@@ -23,8 +23,16 @@ class UserLogin(BaseModel):
 class UserRead(UserBase):
     id: str
     is_active: bool
+    is_onboarded: bool
+    # Optional profile attributes
+    gender: Optional[str] | None = None
+    activity_level: Optional[str] | None = None
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    # Pydantic v2 config
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserUpdateOnboarding(BaseModel):
+    is_onboarded: bool
