@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button.tsx";
 import Aurora from "@/components/Aurora.tsx";
 import TextType from "@/components/TextType.tsx";
+import { useEffect } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { getToken } from "@/service/api.ts";
 
 
 interface option {
@@ -13,8 +16,16 @@ function App(){
     const options: option[] = [
         { route: "/login" , description: "Login" } ,
         { route: "/register" , description: "Registrieren" } ,
-        { route: "/profile" , description: "Profil" } ,
-    ]
+    ];
+
+    const navigate = useNavigate();
+
+    // On mount, if user is logged in, redirect to dashboard
+    useEffect(() => {
+        if (getToken()) {
+            navigate({ to: "/dashboard" });
+        }
+    }, [navigate]);
 
     const showAurora = () => (
         <Aurora
@@ -56,19 +67,11 @@ function App(){
                         <div key={index} className="felx">
                             <a href={option.route} aria-label={option.route} className="cursor-pointer">
                                 {
-                                    option.route !== "/profile" ?
-                                        (
                                             <Button
                                             className="flex rounded-full w-full bg-[#38E07A] text-black hover:bg-[#38E08B] text-2xl">
                                             {option.description}
                                             </Button>
-                                        ):
-                                        (
-                                            <Button
-                                                className="flex rounded-full w-full bg-gray-600 text-white text-2xl hover:bg-gray-750">
-                                                {option.description}
-                                            </Button>
-                                        )
+                                        
                                 }
 
                             </a>
