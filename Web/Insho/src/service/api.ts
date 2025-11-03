@@ -17,6 +17,43 @@ export type LoginResponse = {
   user: User;
 };
 
+export type Food = {
+  id: string;
+  barcode: string;
+  name?: string | null;
+  calories_per_100g?: number | null;
+  proteins_per_100g?: number | null;
+  carbs_per_100g?: number | null;
+  fats_per_100g?: number | null;
+  user_id: string;
+  grams: number;
+  scanned_at: string;
+};
+
+export type FoodLookupResponse = {
+  food: {
+    barcode: string;
+    name?: string | null;
+    calories_per_100g?: number | null;
+    proteins_per_100g?: number | null;
+    carbs_per_100g?: number | null;
+    fats_per_100g?: number | null;
+  } | null;
+  source: 'db' | 'openfoodfacts' | 'not_found' | string;
+};
+
+export type FoodConsumption = {
+  id: string;
+  user_id: string;
+  food_id: string;
+  grams: number;
+  calories?: number | null;
+  proteins?: number | null;
+  carbs?: number | null;
+  fats?: number | null;
+  scanned_at: string;
+};
+
 export type DashboardResponse = {
   show_onboarding: boolean;
 };
@@ -109,4 +146,18 @@ export async function logout(): Promise<void> {
   } finally {
     clearToken();
   }
+}
+
+export async function lookupFood(barcode: string): Promise<FoodLookupResponse> {
+  return request<FoodLookupResponse>('/api/v1/food/lookup', {
+    method: 'POST',
+    body: JSON.stringify({ barcode }),
+  });
+}
+
+export async function consumeFood(barcode: string, grams: number): Promise<Food> {
+  return request<Food>('/api/v1/food/consume', {
+    method: 'POST',
+    body: JSON.stringify({ barcode, grams }),
+  });
 }

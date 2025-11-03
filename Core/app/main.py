@@ -7,15 +7,24 @@ from .api.router import api_router
 # SuperTokens imports (guarded)
 SUPERTOKENS_AVAILABLE = True
 try:
-    from supertokens_python import init, SupertokensConfig, InputAppInfo
-    from supertokens_python.recipe import session, emailpassword, thirdparty
-    from supertokens_python.framework.fastapi import get_middleware
-    from supertokens_python import get_all_cors_headers
+    from supertokens_python import init, SupertokensConfig, InputAppInfo  # type: ignore[import-not-found]
+    from supertokens_python.recipe import session, emailpassword, thirdparty  # type: ignore[import-not-found]
+    from supertokens_python.framework.fastapi import get_middleware  # type: ignore[import-not-found]
+    from supertokens_python import get_all_cors_headers  # type: ignore[import-not-found]
 except ModuleNotFoundError:
     SUPERTOKENS_AVAILABLE = False
     # Define a minimal stub for get_all_cors_headers when SuperTokens is missing
     def get_all_cors_headers():  # type: ignore
         return []
+    # Stubs to satisfy type-checkers (names exist but won't be used)
+    init = None  # type: ignore[assignment]
+    SupertokensConfig = None  # type: ignore[assignment]
+    InputAppInfo = None  # type: ignore[assignment]
+    session = None  # type: ignore[assignment]
+    emailpassword = None  # type: ignore[assignment]
+    thirdparty = None  # type: ignore[assignment]
+    def get_middleware():  # type: ignore
+        return None
 
 settings = get_settings()
 
@@ -50,19 +59,19 @@ if SUPERTOKENS_AVAILABLE:
     # Enable Session, EmailPassword and ThirdParty recipes.
     # Providers for ThirdParty can be configured via SuperTokens Core/Dashboard.
     recipe_list = [
-        session.init(),
-        emailpassword.init(),
-        thirdparty.init(),
+        session.init(),  # type: ignore[union-attr]
+        emailpassword.init(),  # type: ignore[union-attr]
+        thirdparty.init(),  # type: ignore[union-attr]
     ]
 
-    init(
-        app_info=InputAppInfo(
+    init(  # type: ignore[misc]
+        app_info=InputAppInfo(  # type: ignore[misc]
             app_name=settings.PROJECT_NAME,
             api_domain=settings.API_DOMAIN,
             website_domain=settings.WEBSITE_DOMAIN,
             api_base_path=settings.API_BASE_PATH,
         ),
-        supertokens_config=SupertokensConfig(
+        supertokens_config=SupertokensConfig(  # type: ignore[misc]
             connection_uri=settings.SUPERTOKENS_CONNECTION_URI,
             api_key=settings.SUPERTOKENS_API_KEY,
         ),
@@ -71,8 +80,8 @@ if SUPERTOKENS_AVAILABLE:
     )
 
 # SuperTokens middleware and routes (mounted at settings.API_BASE_PATH, default: /auth)
-if SUPERTOKENS_AVAILABLE:
-    app.add_middleware(get_middleware())
+if SUPERTOKENS_AVAILABLE and get_middleware is not None:
+    app.add_middleware(get_middleware())  # type: ignore[arg-type]
 
 # Mount versioned API
 app.include_router(api_router, prefix="/api/v1")
@@ -90,6 +99,7 @@ def root():
 def on_startup() -> None:
     # Ensure models are imported so SQLAlchemy is aware of them
     from .models import user as _user_model  # noqa: F401
+    from .models import food as _food_model  # noqa: F401
     from .core.database import Base, engine
 
     # Create tables if they do not exist (initial bootstrap)

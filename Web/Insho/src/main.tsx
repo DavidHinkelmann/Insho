@@ -16,6 +16,7 @@ import { Onboarding } from "./Onboarding.tsx";
 import { Dashboard } from "@/Dashboard.tsx";
 import { Register } from "@/auth/components/Register.tsx";
 import { Login } from "@/auth/components/Login.tsx";
+import ScanPage from "@/ScanPage.tsx";
 
 // Define routes freshly on module eval; HMR dispose will clean previous instances
 const rootRoute = createRootRoute({
@@ -66,8 +67,14 @@ const onBoardingRoute = createRoute({
   component: () => Onboarding,
 })
 
+const scanRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/scan',
+  component: ScanPage,
+})
+
 const routeTree
-    = rootRoute.addChildren([indexRoute, loginRoute, registerRoute, dashboardRoute, onBoardingRoute])
+  = rootRoute.addChildren([indexRoute, loginRoute, registerRoute, dashboardRoute, onBoardingRoute, scanRoute])
 
 const router = createRouter({
   routeTree,
