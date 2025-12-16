@@ -14,12 +14,10 @@ router = APIRouter()
 def get_user_service() -> UserService:
     return UserService(repo=UserRepository())
 
-
 @router.post("/register", response_model=UserRead, summary="Register a new user")
 def register(payload: UserCreate, db: Session = Depends(get_db), service: UserService = Depends(get_user_service)):
     user = service.register(db, payload)
     return UserRead.model_validate(user)
-
 
 @router.post("/login", response_model=LoginResponse)
 def login(payload: UserLogin, db: Session = Depends(get_db), service: UserService = Depends(get_user_service)):
@@ -36,7 +34,6 @@ def login(payload: UserLogin, db: Session = Depends(get_db), service: UserServic
     except Exception as e:
         print("Login error:", e)
         raise
-
 
 @router.get("/me", response_model=UserRead, summary="Get current user (protected)")
 async def get_me(current_user=Depends(get_current_user)):

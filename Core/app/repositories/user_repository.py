@@ -43,3 +43,23 @@ class UserRepository:
         db.commit()
         db.refresh(user)
         return user
+
+    def update_onboarding(self, db: Session, user: User, **fields) -> User:
+        # Update only provided, non-None values
+        updatable = [
+            "name",
+            "age",
+            "height",
+            "weight",
+            "gender",
+            "activity_level",
+            "kcal_goal",
+            "is_onboarded",
+        ]
+        for key in updatable:
+            if key in fields and fields[key] is not None:
+                setattr(user, key, fields[key])
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return user

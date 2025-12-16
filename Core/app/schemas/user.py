@@ -25,7 +25,11 @@ class UserRead(UserBase):
     is_active: bool
     is_onboarded: bool
     # Optional profile attributes
+    age: Optional[int] | None = None
+    height: Optional[float] | None = None
+    weight: Optional[float] | None = None
     gender: Optional[str] | None = None
+    kcal_goal: Optional[int] | None = None
     activity_level: Optional[str] | None = None
     created_at: datetime
     updated_at: datetime
@@ -33,6 +37,17 @@ class UserRead(UserBase):
     # Pydantic v2 config
     model_config = ConfigDict(from_attributes=True)
 
-
 class UserUpdateOnboarding(BaseModel):
-    is_onboarded: bool
+    # default to True when onboarding submits
+    is_onboarded: bool = True
+
+class UserOnboardingUpdate(BaseModel):
+    # All fields optional; only provided values will be updated
+    name: Optional[str] | None = None
+    age: Optional[int] | None = None
+    height: Optional[int] | None = None
+    weight: Optional[int] | None = None
+    gender: Optional[str] | None = None
+    activity_level: Optional[str] | None = None
+    kcal_goal: Optional[int] | None = None
+    is_onboarded: bool = True
