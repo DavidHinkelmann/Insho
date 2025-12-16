@@ -1,0 +1,21 @@
+
+.outer-button-container{
+    margin-top: 100px;
+    display: flex;
+    justify-content:center;
+
+    > .inner-button-container{
+    display: flex;
+    flex-direction:column;
+    width:25%;
+
+        > button{
+            margin: 15px;
+            padding: 10px ;
+            border-radius: 15px;
+            background-color: #38E07A;
+            color: #00000;
+        }
+    }
+
+}

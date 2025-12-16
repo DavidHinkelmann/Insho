@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useEffect , useState } from "react";
 import { me as apiMe , type User, getDashboard, setOnboarded } from "@/service/api.ts";
 import { Onboarding, type OnboardingData } from "@/Onboarding.tsx";
+import "./styleSheets/dashboard.css"
 
 export function Dashboard() {
     const navigate = useNavigate()
@@ -38,6 +39,10 @@ export function Dashboard() {
         }
     }
 
+    const toScanPage=()=>{
+        console.log("Hallo Welt")
+    }
+
     if (error) return <div style={{ padding: 16 }}><p style={{ color: 'red' }}>{error}</p></div>
     if (!user) return <div style={{ padding: 16 }}>Lade Profil…</div>
 
@@ -49,13 +54,16 @@ export function Dashboard() {
             <p className="text-xl text-white flex justify-center mt-4">
                 Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit Leichtigkeit.
             </p>
-            <button
-                type="submit"
-                className="mt-170 w-full rounded-full bg-[#38E07A] text-black hover:bg-[#38E07A] px-4 py-2 font-medium disabled:opacity-70"
-            >
-                Loslegen
-            </button>
-
+            <div className="outer-button-container">
+                <div className="inner-button-container">
+                <button onClick={()=>toScanPage()}>
+                    zur Charge Coupled Device Funktion
+                </button>
+                <button>
+                    Niederschreibung der Essensverhältnisse
+                </button>
+                </div>
+            </div>
             <Onboarding
                 open={showOnboarding}
                 defaultName={user?.name ?? ''}
