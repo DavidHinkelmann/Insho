@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import String, Boolean, DateTime, func, UniqueConstraint
+from sqlalchemy import String, Boolean, DateTime, func, UniqueConstraint, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..core.database import Base
@@ -24,6 +24,11 @@ class User(Base):
     # Newly added optional attributes
     gender: Mapped[str | None] = mapped_column(String(16), nullable=True)
     activity_level: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    # Profile details (nullable)
+    age: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    height: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    weight: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    kcal_goal: Mapped[int | None] = mapped_column(Integer, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(

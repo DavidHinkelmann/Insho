@@ -35,67 +35,6 @@ Insho(インショ) means eating and drinking in Japanese.
 </details>
 
 <details>
-  <summary>🔑 SuperTokens info</summary>
-
-Note: SuperTokens Core should be running at http://localhost:3567 (default). You can change this via env SUPERTOKENS_CONNECTION_URI.
-
-CORS / Origins:
-
-- The backend now accepts multiple website origins via env WEBSITE_ORIGINS (comma-separated).
-- Defaults include your configured WEBSITE_DOMAIN plus common dev URLs:
-  - http://localhost:3000, http://localhost:5173
-  - http://127.0.0.1:3000, http://127.0.0.1:5173
-- If your frontend runs on a different port or hostname, set:
-  
-  ```bash
-  WEBSITE_ORIGINS="http://localhost:3000,http://localhost:5173,http://my-host:8080"
-  ```
-
-Recipes:
-
-- Backend enables EmailPassword + Session + ThirdParty recipes by default. Social providers require configuration to be usable.
-- The frontend includes ThirdParty (Google). To use social login, configure a provider via SuperTokens Core/Dashboard or set backend env vars; otherwise, use Email/Password.
-
-Google (ThirdParty) setup:
-
-1) Create OAuth client in Google Cloud Console
-   - Application type: Web application
-   - Authorized JavaScript origins:
-     - http://localhost:3000 (or your frontend URL)
-   - Authorized redirect URIs:
-     - http://localhost:3000/auth/callback/google (websiteDomain + websiteBasePath + "/callback/google")
-
-2) Configure backend environment
-   - Set these env vars so the backend enables the ThirdParty recipe:
-     - GOOGLE_CLIENT_ID
-     - GOOGLE_CLIENT_SECRET
-   - Examples:
-     - Local shell:
-       export GOOGLE_CLIENT_ID=your-google-client-id
-       export GOOGLE_CLIENT_SECRET=your-google-client-secret
-     - Docker Compose (edit docker-compose.yml -> backend -> environment):
-       - GOOGLE_CLIENT_ID=your-google-client-id
-       - GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-3) Restart backend and frontend
-   - After setting env vars, restart uvicorn or docker compose so changes take effect.
-
-Behavior without Google config:
-- If GOOGLE_CLIENT_ID/SECRET are not set, the backend will still run with EmailPassword + Session, but Google login will not be available.
-
-### Troubleshooting
-
-- If you see `ModuleNotFoundError: No module named 'supertokens_python'` when starting uvicorn:
-    - Ensure your virtualenv is activated.
-    - Install deps using one of the commands above (Core/requirements.txt or root requirements.txt).
-    - After installation, restart uvicorn.
-- Until SuperTokens is installed, the API will start but:
-    - GET `/` includes an `auth_warning` field.
-    - GET `/api/v1/auth/me` returns HTTP 503 with guidance.
-</details>
-
-
-<details>
 <summary>🌍 How to Frontend Local</summary>
 
 ## Start Web 🚀
