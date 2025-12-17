@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useEffect , useState } from "react";
 import { me as apiMe , type User, getDashboard, setOnboarded } from "@/service/api.ts";
 import { Onboarding, type OnboardingData } from "@/Onboarding.tsx";
-import "./styleSheets/dashboard.css"
+import "./auth/styleSheets/Dashboard.css"
 
 export function Dashboard() {
     const navigate = useNavigate()
@@ -41,23 +41,22 @@ export function Dashboard() {
 
     const toScanPage=()=>{
         console.log("Hallo Welt")
+        navigate({to: '/login'})
     }
 
     if (error) return <div style={{ padding: 16 }}><p style={{ color: 'red' }}>{error}</p></div>
     if (!user) return <div style={{ padding: 16 }}>Lade Profil…</div>
 
     return (
-        <div className="bg-[#1C3024] min-h-screen w-full">
-            <div className="flex flex-row px-8 mx-auto justify-center">
-                <h1 className="text-6xl font-bold text-[#38E07A]">インショ</h1>
-            </div>
-            <p className="text-xl text-white flex justify-center mt-4">
+        <div className="dashboard-background">
+            <h1>インショ</h1>
+            <h2>
                 Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit Leichtigkeit.
-            </p>
+            </h2>
             <div className="outer-button-container">
                 <div className="inner-button-container">
                 <button onClick={()=>toScanPage()}>
-                    zur Charge Coupled Device Funktion
+                    Zur Charge Coupled Device Funktion
                 </button>
                 <button>
                     Niederschreibung der Essensverhältnisse

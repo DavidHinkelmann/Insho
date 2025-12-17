@@ -1,20 +1,24 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect , useState } from "react";
-import { me as apiMe , type User, logout as apiLogout } from "@/service/api.ts";
-import TextType from "@/components/TextType.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { LogOut } from "lucide-react";
+import { me as apiMe , type User, getDashboard, setOnboarded } from "@/service/api.ts";
+import { Onboarding, type OnboardingData } from "@/Onboarding.tsx";
+import "../styleSheets/Dashboard.css"
 
 export function Dashboard() {
     const navigate = useNavigate()
     const [user, setUser] = useState<User | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [showOnboarding, setShowOnboarding] = useState(false)
+
     useEffect(() => {
         let mounted = true
         ;(async () => {
             try {
                 const u = await apiMe()
                 if (mounted) setUser(u)
+                // Check dashboard onboarding flag
+                const d = await getDashboard()
+                if (mounted) setShowOnboarding(!!d.show_onboarding)
             } catch (err: any) {
                 setError(err.message || 'Nicht eingeloggt')
                 navigate({ to: '/login' })
@@ -23,41 +27,48 @@ export function Dashboard() {
         return () => { mounted = false }
     }, [navigate])
 
+    const handleCompleted = async (_data: OnboardingData) => {
+        try {
+            await setOnboarded(true)
+            // Refresh user and dashboard flag
+            const u = await apiMe()
+            setUser(u)
+            setShowOnboarding(false)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    const toScanPage=()=>{
+        console.log("Hallo Welt")
+        //navigate({to: '/login'})
+    }
+
     if (error) return <div style={{ padding: 16 }}><p style={{ color: 'red' }}>{error}</p></div>
     if (!user) return <div style={{ padding: 16 }}>Lade Profil…</div>
 
     return (
-        <div className="bg-[#264533] min-h-screen w-full">
-            <div className="flex flex-row px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
-                <a className="flex justify-items-start" href="javascript:void(0)">
-                    <h2 className="text-2xl font-bold text-white">インショ</h2>
-                </a>
-                <TextType
-                    className="flex justify-center text-4xl text-[#38E07A]"
-                    text={[`👋 Willkommen, ${user.name || '—'}`]}
-                    typingSpeed={75}
-                    pauseDuration={1500}
-                    showCursor={true}
-                    textColors={["#38E07A"]}
-                    cursorCharacter="▌"
-                    loop={false}
-                />
-            </div>
-            <nav className="w-full fixed bottom-0">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex justify-end">
-                    <Button
-                        className="bg-[#38E07A] text-black hover:bg-[#38E07A]/90"
-                        onClick={async () => {
-                            await apiLogout()
-                            navigate({ to: '/login' })
-                        }}
-                        title="Logout"
-                    >
-                        <LogOut />
-                        Logout
-                    </Button>
+        <div className="dashboard-background">
+            <h1>インショ</h1>
+            <h2>
+                Verfolgen Sie Ihre tägliche Nahrungsaufnahme und -ausgabe mit Leichtigkeit.
+            </h2>
+            <div className="outer-button-container">
+                <div className="inner-button-container">
+                <button onClick={()=>toScanPage()}>
+                    Zur Charge Coupled Device Funktion
+                </button>
+                <button>
+                    Niederschreibung der Essensverhältnisse
+                </button>
                 </div>
-            </nav>
+            </div>
+            <Onboarding
+                open={showOnboarding}
+                defaultName={user?.name ?? ''}
+                onClose={() => setShowOnboarding(false)}
+                onCompleted={handleCompleted}
+            />
         </div>
     )
 }

@@ -1,0 +1,42 @@
+
+.dashboard-background{
+    max-width:100%;
+    min-height:100vh;
+    background-color: #1C3024;
+    text-align:center;
+
+    h1{
+        color: #38E07A;
+        font-weight: bold;
+        font-size: 72px
+    }
+    h2{
+        margin:20px;
+        color: white;
+        font-size:24px;
+
+    }
+
+
+    .outer-button-container{
+        margin-top: 100px;
+        display: flex;
+        justify-content:center;
+
+        > .inner-button-container{
+        display: flex;
+        flex-direction:column;
+        width:25%;
+
+            > button{
+                margin: 15px;
+                padding: 10px ;
+                border-radius: 15px;
+                background-color: #38E07A;
+                color: black;
+            }
+        }
+
+    }
+}
+
