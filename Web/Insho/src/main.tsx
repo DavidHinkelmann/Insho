@@ -13,10 +13,10 @@ import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import App from './App.tsx'
 import { Onboarding } from "./Onboarding.tsx";
-import { Dashboard } from "@/Dashboard.tsx";
-import { Register } from "@/auth/components/Register.tsx";
-import { Login } from "@/auth/components/Login.tsx";
-import ScanPage from "@/ScanPage.tsx";
+import { Dashboard } from "@/auth/pages/Dashboard.tsx";
+import { Register } from "@/auth/pages/Register.tsx";
+import { Login } from "@/auth/pages/Login.tsx";
+import ScanPage from "@/auth/pages/ScanPage.tsx";
 
 // Define routes freshly on module eval; HMR dispose will clean previous instances
 const rootRoute = createRootRoute({
@@ -72,6 +72,7 @@ const scanRoute = createRoute({
   path: '/scan',
   component: ScanPage,
 })
+
 
 const routeTree
   = rootRoute.addChildren([indexRoute, loginRoute, registerRoute, dashboardRoute, onBoardingRoute, scanRoute])

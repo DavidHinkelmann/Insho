@@ -2,6 +2,9 @@ import { useNavigate } from "@tanstack/react-router";
 import { useEffect , useState } from "react";
 import { me as apiMe , type User, getDashboard, setOnboarded } from "@/service/api.ts";
 import { Onboarding, type OnboardingData } from "@/Onboarding.tsx";
+import { DoorOpen } from 'lucide-react';
+import { ScanQrCode } from 'lucide-react';
+import { NotebookPen } from 'lucide-react';
 import "../styleSheets/Dashboard.css"
 
 export function Dashboard() {
@@ -40,8 +43,11 @@ export function Dashboard() {
     }
 
     const toScanPage=()=>{
-        console.log("Hallo Welt")
-        //navigate({to: '/login'})
+        navigate({to: '/scan'})
+    }
+
+    const toLoginPage=()=>{
+         navigate({to: '/login'})
     }
 
     if (error) return <div style={{ padding: 16 }}><p style={{ color: 'red' }}>{error}</p></div>
@@ -56,10 +62,13 @@ export function Dashboard() {
             <div className="outer-button-container">
                 <div className="inner-button-container">
                 <button onClick={()=>toScanPage()}>
-                    Zur Charge Coupled Device Funktion
+                    <ScanQrCode/> Zur Charge Coupled Device Funktion
                 </button>
                 <button>
-                    Niederschreibung der Essensverhältnisse
+                    <NotebookPen/> Niederschreibung der Essensverhältnisse
+                </button>
+                <button className="logout" onClick={()=>toLoginPage()}>
+                    Abmelden <DoorOpen/>
                 </button>
                 </div>
             </div>

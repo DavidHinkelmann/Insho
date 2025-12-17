@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import BarcodeScanner from "@/components/BarcodeScanner.tsx";
-import { consumeFood, lookupFood } from "./service/api";
-import type { FoodLookupResponse } from "./service/api";
+import { consumeFood, lookupFood } from "@/service/api";
+import type { FoodLookupResponse } from "@/service/api";
 
 export default function ScanPage() {
   const [ean, setEan] = useState<string | null>(null);
